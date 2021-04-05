@@ -23,7 +23,7 @@ const int WIDTH = 800, HEIGHT = 600;
 const char* fragshader_name = "fragmentshader.fsh";
 const char* vertexshader_name = "vertexshader.vsh";
 
-unsigned const int DELTA_TIME = 10;
+unsigned const int DELTA_TIME = 1000 / 60;
 
 
 //--------------------------------------------------------------------------------
@@ -101,9 +101,10 @@ GLushort cube_elements[] = {
 
 void Render()
 {
+    float deltaTimeSec = float(DELTA_TIME) / 1000.f;
+
     if (key_input::justPressed(27)) // ESC
         glutExit();
-
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,8 +113,7 @@ void Render()
     glUseProgram(program_id);
 
     // Do transformation
-
-    camController.update(DELTA_TIME, *camera);
+    camController.update(deltaTimeSec, *camera);
     model = rotate(model, 0.01f, vec3(0.0f, 1.0f, 0.0f));
     mvp = camera->combined * model;
 
@@ -128,6 +128,7 @@ void Render()
 
     glutSwapBuffers();
     key_input::update();
+    mouse_input::getDelta() = ivec2(0);
 }
 
 
@@ -160,7 +161,7 @@ void InitGlutGlew(int argc, char** argv)
     glutPassiveMotionFunc(mouse_input::motionHandler);
     glutTimerFunc(DELTA_TIME, Render, 0);
 
-    glutSetCursor(GLUT_CURSOR_NONE);
+    glutSetCursor(GLUT_CURSOR_NONE);    // hide cursor
 
     glewInit();
 }
@@ -253,7 +254,6 @@ void InitBuffers()
 int main(int argc, char** argv)
 {
     camera = new PerspectiveCamera(.1, 1000, WIDTH, HEIGHT, 90);
-    camController.speedMultiplier = .05;
 
     InitGlutGlew(argc, argv);
     InitShaders();

@@ -6,31 +6,67 @@
 
 void CameraController::update(float deltaTime, PerspectiveCamera &cam)
 {
-    if (key_input::pressed('w'))
-        cam.position += cam.direction * deltaTime * speedMultiplier;
+    // move using keyboard:
+    {
+        vec3 forward = cam.direction;
+        forward.y = 0;
+        forward = normalize(forward);
 
-    if (key_input::pressed('s'))
-        cam.position += -cam.direction * deltaTime * speedMultiplier;
+        // forward, backward
+        if (key_input::pressed('w'))
+            cam.position += forward * deltaTime * speedMultiplier;
+        if (key_input::pressed('s'))
+            cam.position += -forward * deltaTime * speedMultiplier;
 
-    if (key_input::pressed('d'))
-        cam.position += cam.right * deltaTime * speedMultiplier;
+        // right, left
+        if (key_input::pressed('d'))
+            cam.position += cam.right * deltaTime * speedMultiplier;
+        if (key_input::pressed('a'))
+            cam.position += -cam.right * deltaTime * speedMultiplier;
 
-    if (key_input::pressed('a'))
-        cam.position += -cam.right * deltaTime * speedMultiplier;
+        // down, up
+        if (key_input::pressed('q'))
+            cam.position.y -= deltaTime * speedMultiplier;
+        if (key_input::pressed('e'))
+            cam.position.y += deltaTime * speedMultiplier;
+    }
 
-    if (key_input::pressed('q'))
-        cam.position.y -= deltaTime * speedMultiplier;
+    // rotate using mouse, instead of IJKL:
+    {
+        cam.rotate(mouse_input::getDelta().x / cam.viewportWidth * -100 * mouseSensivity, mu::Y);
+        cam.rotate(mouse_input::getDelta().y / cam.viewportHeight * -100 * mouseSensivity, cam.right);
 
-    if (key_input::pressed('e'))
-        cam.position.y += deltaTime * speedMultiplier;
+        // set cursor back to center of screen:
+        auto mousePos = mouse_input::getPosition();
 
-    cam.rotate(mouse_input::getDelta().x / cam.viewportWidth * -100 * mouseSensivity, mu::Y);
+        if (mousePos.x <= 100 || mousePos.y <= 100
+            || mousePos.x >= cam.viewportWidth - 100 || mousePos.y >= cam.viewportHeight - 100)
+        {
+            mouse_input::getPosition() = ivec2(cam.viewportWidth / 2, cam.viewportHeight / 2);
+            glutWarpPointer(cam.viewportWidth / 2, cam.viewportHeight / 2);
+        }        
+    }
 
-    cam.rotate(mouse_input::getDelta().y / cam.viewportHeight * -100 * mouseSensivity, cam.right);
+    if (key_input::justPressed('v'))
+        droneMode = !droneMode;
 
-    cam.update();
+    if (!droneMode) // walk mode:
+    {
+        yVelocity -= gravity * deltaTime;
+        cam.position.y += yVelocity;
 
-    // set cursor back to center of screen:
-    glutWarpPointer(cam.viewportWidth / 2, cam.viewportHeight / 2);
-    mouse_input::getPosition() = ivec2(cam.viewportWidth / 2, cam.viewportHeight / 2);
+        if (cam.position.y <= minimumEyeHeight)
+        {
+            yVelocity = 0;
+            cam.position.y = minimumEyeHeight;
+        }
+
+        if (key_input::pressed(' ') && cam.position.y == minimumEyeHeight)
+            yVelocity = jumpForce;
+    }
+    else // drone mode:
+    {
+
+    }
+    cam.update(); // update matrices.
 }
