@@ -130,9 +130,12 @@
   <ItemGroup>
     <ClCompile Include="glsl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="graphics\PerspectiveCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h" />
+    <ClInclude Include="math.h" />
+    <ClInclude Include="graphics\PerspectiveCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertexshader.vsh">

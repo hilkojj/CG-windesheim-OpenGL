@@ -3,9 +3,8 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "math.h"
+#include "graphics/PerspectiveCamera.h"
 
 #include "glsl.h"
 
@@ -36,8 +35,9 @@ GLuint vao;
 GLuint uniform_mvp;
 
 // Matrices
-glm::mat4 model, view, projection;
-glm::mat4 mvp;
+mat4 model;
+mat4 mvp;
+PerspectiveCamera camera(.1, 1000, WIDTH, HEIGHT, 90);
 
 
 //--------------------------------------------------------------------------------
@@ -114,11 +114,16 @@ void Render()
     glUseProgram(program_id);
 
     // Do transformation
-    model = glm::rotate(model, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-    mvp = projection * view * model;
+
+    camera.position = vec3(10, 0, 0);
+    camera.lookAt(mu::ZERO_3);
+    camera.update();
+
+    model = rotate(model, 0.01f, vec3(0.0f, 1.0f, 0.0f));
+    mvp = camera.combined * model;
 
     // Send mvp
-    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, value_ptr(mvp));
 
     // Send vao
     glBindVertexArray(vao);
@@ -175,25 +180,6 @@ void InitShaders()
     GLuint fsh_id = glsl::makeFragmentShader(fragshader);
 
     program_id = glsl::makeShaderProgram(vsh_id, fsh_id);
-}
-
-
-//------------------------------------------------------------
-// void InitMatrices()
-//------------------------------------------------------------
-
-void InitMatrices()
-{
-    model = glm::mat4();
-    view = glm::lookAt(
-        glm::vec3(2.0, 2.0, 7.0),  // eye
-        glm::vec3(0.0, 0.0, 0.0),  // center
-        glm::vec3(0.0, 1.0, 0.0));  // up
-    projection = glm::perspective(
-        glm::radians(45.0f),
-        1.0f * WIDTH / HEIGHT, 0.1f,
-        20.0f);
-    mvp = projection * view * model;
 }
 
 
@@ -258,12 +244,9 @@ void InitBuffers()
     // Make uniform vars
     uniform_mvp = glGetUniformLocation(program_id, "mvp");
 
-    // Define model
-    mvp = projection * view * model;
-
     // Send mvp
     glUseProgram(program_id);
-    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, value_ptr(mvp));
 }
 
 
@@ -271,7 +254,6 @@ int main(int argc, char** argv)
 {
     InitGlutGlew(argc, argv);
     InitShaders();
-    InitMatrices();
     InitBuffers();
 
     glEnable(GL_DEPTH_TEST);
