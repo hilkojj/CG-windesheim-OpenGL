@@ -7,7 +7,7 @@ class CameraController
 
 public:
 
-	float speedMultiplier = 1, mouseSensivity = 1;
+	float speedMultiplier = 1, mouseSensivity = 2;
 
 	void update(float deltaTime, PerspectiveCamera &);
 

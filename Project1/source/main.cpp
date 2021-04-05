@@ -9,6 +9,7 @@
 
 #include "glsl.h"
 #include "input/key_input.h"
+#include "input/mouse_input.h"
 
 using namespace std;
 
@@ -156,7 +157,10 @@ void InitGlutGlew(int argc, char** argv)
     glutDisplayFunc(Render);
     glutKeyboardFunc(key_input::keyPressedHandler);
     glutKeyboardUpFunc(key_input::keyUpHandler);
+    glutPassiveMotionFunc(mouse_input::motionHandler);
     glutTimerFunc(DELTA_TIME, Render, 0);
+
+    glutSetCursor(GLUT_CURSOR_NONE);
 
     glewInit();
 }

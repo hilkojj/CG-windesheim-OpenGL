@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\input\mouse_input.cpp" />
     <ClCompile Include="source\input\key_input.cpp" />
     <ClCompile Include="source\graphics\camera\CameraController.cpp" />
     <ClCompile Include="source\glsl.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="source\graphics\camera\PerspectiveCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\input\mouse_input.h" />
     <ClInclude Include="source\input\key_input.h" />
     <ClInclude Include="source\graphics\camera\CameraController.h" />
     <ClInclude Include="source\glsl.h" />

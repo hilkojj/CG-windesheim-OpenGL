@@ -1,39 +1,11 @@
 #include "CameraController.h"
 #include "../../input/key_input.h"
+#include "../../input/mouse_input.h"
+
+#include <GL/freeglut.h>
 
 void CameraController::update(float deltaTime, PerspectiveCamera &cam)
 {
-    /*
-    speedMultiplier += MouseInput::yScroll * .5;
-    if (speedMultiplier < 0) speedMultiplier = 0;
-
-    if (KeyInput::pressed(GLFW_KEY_W))
-        cam->position += cam->direction * glm::vec3(deltaTime * speedMultiplier);
-
-    if (KeyInput::pressed(GLFW_KEY_S))
-        cam->position += cam->direction * glm::vec3(-deltaTime * speedMultiplier);
-
-    if (KeyInput::pressed(GLFW_KEY_D))
-        cam->position += cam->right * glm::vec3(deltaTime * speedMultiplier);
-
-    if (KeyInput::pressed(GLFW_KEY_A))
-        cam->position += cam->right * glm::vec3(-deltaTime * speedMultiplier);
-
-    if (KeyInput::pressed(GLFW_KEY_LEFT_SHIFT))
-        cam->position.y -= deltaTime * speedMultiplier;
-
-    if (KeyInput::pressed(GLFW_KEY_SPACE))
-        cam->position.y += deltaTime * speedMultiplier;
-
-    if (MouseInput::deltaMouseX != 0)
-        cam->rotate(MouseInput::deltaMouseX / gu::width * -100 * mouseSensivity, mu::Y);
-
-    if (MouseInput::deltaMouseY != 0)
-        cam->rotate(MouseInput::deltaMouseY / gu::height * -100 * mouseSensivity, cam->right);
-
-
-    */
-
     if (key_input::pressed('w'))
         cam.position += cam.direction * deltaTime * speedMultiplier;
 
@@ -52,5 +24,13 @@ void CameraController::update(float deltaTime, PerspectiveCamera &cam)
     if (key_input::pressed('e'))
         cam.position.y += deltaTime * speedMultiplier;
 
+    cam.rotate(mouse_input::getDelta().x / cam.viewportWidth * -100 * mouseSensivity, mu::Y);
+
+    cam.rotate(mouse_input::getDelta().y / cam.viewportHeight * -100 * mouseSensivity, cam.right);
+
     cam.update();
+
+    // set cursor back to center of screen:
+    glutWarpPointer(cam.viewportWidth / 2, cam.viewportHeight / 2);
+    mouse_input::getPosition() = ivec2(cam.viewportWidth / 2, cam.viewportHeight / 2);
 }
