@@ -4,9 +4,11 @@
 #include <GL/freeglut.h>
 
 #include "math.h"
-#include "graphics/PerspectiveCamera.h"
+#include "graphics/camera/PerspectiveCamera.h"
+#include "graphics/camera/CameraController.h"
 
 #include "glsl.h"
+#include "input/key_input.h"
 
 using namespace std;
 
@@ -37,7 +39,9 @@ GLuint uniform_mvp;
 // Matrices
 mat4 model;
 mat4 mvp;
-PerspectiveCamera camera(.1, 1000, WIDTH, HEIGHT, 90);
+
+PerspectiveCamera *camera = NULL;   // initialization in main()
+CameraController camController;
 
 
 //--------------------------------------------------------------------------------
@@ -91,22 +95,15 @@ GLushort cube_elements[] = {
 
 
 //--------------------------------------------------------------------------------
-// Keyboard handling
-//--------------------------------------------------------------------------------
-
-void keyboardHandler(unsigned char key, int a, int b)
-{
-    if (key == 27)
-        glutExit();
-}
-
-
-//--------------------------------------------------------------------------------
 // Rendering
 //--------------------------------------------------------------------------------
 
 void Render()
 {
+    if (key_input::justPressed(27)) // ESC
+        glutExit();
+
+
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -115,12 +112,9 @@ void Render()
 
     // Do transformation
 
-    camera.position = vec3(10, 0, 0);
-    camera.lookAt(mu::ZERO_3);
-    camera.update();
-
+    camController.update(DELTA_TIME, *camera);
     model = rotate(model, 0.01f, vec3(0.0f, 1.0f, 0.0f));
-    mvp = camera.combined * model;
+    mvp = camera->combined * model;
 
     // Send mvp
     glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, value_ptr(mvp));
@@ -132,6 +126,7 @@ void Render()
     glBindVertexArray(0);
 
     glutSwapBuffers();
+    key_input::update();
 }
 
 
@@ -157,9 +152,10 @@ void InitGlutGlew(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(WIDTH, HEIGHT);
-    glutCreateWindow("Hello OpenGL");
+    glutCreateWindow("CG Hilko Janssen");
     glutDisplayFunc(Render);
-    glutKeyboardFunc(keyboardHandler);
+    glutKeyboardFunc(key_input::keyPressedHandler);
+    glutKeyboardUpFunc(key_input::keyUpHandler);
     glutTimerFunc(DELTA_TIME, Render, 0);
 
     glewInit();
@@ -252,6 +248,9 @@ void InitBuffers()
 
 int main(int argc, char** argv)
 {
+    camera = new PerspectiveCamera(.1, 1000, WIDTH, HEIGHT, 90);
+    camController.speedMultiplier = .05;
+
     InitGlutGlew(argc, argv);
     InitShaders();
     InitBuffers();

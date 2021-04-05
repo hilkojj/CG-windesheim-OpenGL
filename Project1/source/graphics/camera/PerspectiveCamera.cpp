@@ -8,6 +8,10 @@ PerspectiveCamera::PerspectiveCamera(float near_, float far_, float viewportWidt
     viewportWidth(viewportWidth), viewportHeight(viewportHeight),
     fieldOfView(fieldOfView)
 {
+
+    position = vec3(10, 0, 0);
+    lookAt(mu::ZERO_3);
+    update();
 }
 
 void PerspectiveCamera::update()
