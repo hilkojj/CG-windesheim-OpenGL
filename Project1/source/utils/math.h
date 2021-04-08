@@ -25,4 +25,30 @@ namespace mu	// math utilities
 
         DEGREES_TO_RAD = PI / 180.0f,
         RAD_TO_DEGREES = 180.0f / PI;
+
+    inline float random()
+    {
+        return (float)std::rand() / RAND_MAX;
+    }
+
+    inline float random(float max)
+    {
+        return random() * max;
+    }
+
+    inline float random(float min, float max)
+    {
+        return random(max - min) + min;
+    }
+
+    inline int randomInt(int max)
+    {
+        if (max == 0) return 0;
+        return std::rand() % max;
+    }
+
+    inline int randomInt(int min, int max)
+    {
+        return randomInt(max - min) + min;
+    }
 }

@@ -110,6 +110,51 @@ void InitGlutGlew(int argc, char** argv)
     std::cout << "OpenGL renderer & version: " << glGetString(GL_RENDERER) << " - " << glGetString(GL_VERSION) << std::endl;
 }
 
+void addTree(const vec2& pos)
+{
+    scene->models.emplace_back();
+    auto& tree = scene->models.back();
+
+    float treeHeight = mu::random(12, 30);
+
+    auto sphere = mesh_generators::createSphere(32, 16, scale(translate(mat4(1), vec3(0, treeHeight, 0)), vec3(4)));
+    tree.meshes.push_back(sphere);
+
+    auto cylinder = mesh_generators::createCylinder(16, scale(mat4(1), vec3(1, treeHeight, 1)));
+    tree.meshes.push_back(cylinder);
+
+    sphere->material.texture = texture_loader::getOrLoad("assets/models/textures/leaves.png");
+    cylinder->material.texture = texture_loader::getOrLoad("assets/models/textures/bark.png");
+
+    auto& buffer = VertexBuffer::with(sphere->attributes)->add(sphere).add(cylinder);
+
+    for (int i = 0; i < mu::randomInt(2, 5); i++)
+    {
+        mat4 tf = mat4(1);
+
+        float length = mu::random(1, 10);
+        float start = mu::random(0, treeHeight);
+
+        tf = translate(tf, vec3(0, start, 0));
+        tf = rotate(tf, mu::random(360) * mu::DEGREES_TO_RAD, mu::Y);
+        tf = rotate(tf, mu::random(20, 90) * mu::DEGREES_TO_RAD, mu::X);
+
+        auto sphere = mesh_generators::createSphere(32, 16, scale(tf * translate(mat4(1), vec3(0, length, 0)), vec3(2)));
+        tree.meshes.push_back(sphere);
+
+        auto cylinder = mesh_generators::createCylinder(16, tf * scale(mat4(1), vec3(.4, length, .4)));
+        tree.meshes.push_back(cylinder);
+
+        buffer.add(sphere).add(cylinder);
+
+        sphere->material.texture = texture_loader::getOrLoad("assets/models/textures/leaves.png");
+        cylinder->material.texture = texture_loader::getOrLoad("assets/models/textures/bark.png");
+    }
+
+    buffer.upload(true);
+
+    tree.transform = translate(tree.transform, vec3(pos.x, 0, pos.y));
+}
 
 int main(int argc, char** argv)
 {
@@ -137,18 +182,9 @@ int main(int argc, char** argv)
     VertexBuffer::uploadSingleMesh(quad);
     groundPlane.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
 
-
-    scene->models.emplace_back();
-    auto& tree = scene->models.back();
-    auto sphere = mesh_generators::createSphere(32, 16, scale(mat4(1), vec3(1)));
-    tree.meshes.push_back(sphere);
-
-    auto cylinder = mesh_generators::createCylinder(8, scale(mat4(1), vec3(3, 5, 3)));
-    tree.meshes.push_back(cylinder);
-
-    VertexBuffer::with(sphere->attributes)->add(sphere).add(cylinder).upload(true);
-    tree.meshes.back()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
-
+    addTree(vec2(0, 0));
+    addTree(vec2(0, 30));
+    addTree(vec2(0, 60));
 
     onResize(WIDTH, HEIGHT);
 
