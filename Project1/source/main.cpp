@@ -11,6 +11,8 @@
 #include "input/mouse_input.h"
 #include "graphics/ShaderProgram.h"
 #include "utils/files.h"
+#include "graphics/geometry/Mesh.h"
+#include "graphics/geometry/VertexBuffer.h"
 
 using namespace std;
 
@@ -27,8 +29,7 @@ unsigned const int DELTA_TIME = 1000 / 60;
 // Variables
 //--------------------------------------------------------------------------------
 
-// ID's
-GLuint vao;
+SharedMesh testMesh;
 
 // Matrices
 mat4 model;
@@ -64,6 +65,8 @@ void Render()
     // Send mvp
     glUniformMatrix4fv(shader->location("mvp"), 1, GL_FALSE, value_ptr(mvp));
 
+    testMesh->render();
+
     glutSwapBuffers();
     key_input::update();
     mouse_input::getDelta() = ivec2(0);
@@ -96,7 +99,9 @@ void onResize(int w, int h)
 
 void InitGlutGlew(int argc, char** argv)
 {
+    glewExperimental = true;        // https://stackoverflow.com/questions/30061443/opengl-glgenvertexarrays-access-violation-executing-location-0x00000000
     glutInit(&argc, argv);
+    glutInitContextVersion(4, 3);   // request OpenGL Core 4.3
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("CG Hilko Janssen");
@@ -112,7 +117,7 @@ void InitGlutGlew(int argc, char** argv)
     glewInit();
 
     // print OpenGL version:
-    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "OpenGL renderer & version: " << glGetString(GL_RENDERER) << " - " << glGetString(GL_VERSION) << std::endl;
 }
 
 
@@ -133,12 +138,28 @@ void InitShaders()
 int main(int argc, char** argv)
 {
     camera = new PerspectiveCamera(.1, 1000, WIDTH, HEIGHT, 90);
-
     InitGlutGlew(argc, argv);
     InitShaders();
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+
+
+    testMesh = SharedMesh(new Mesh);
+    testMesh->attributes.add({ "position", 3 });
+
+    testMesh->addVertices(4);
+
+    testMesh->get<vec3>(0, 0) = vec3(-1, -1, 0);
+    testMesh->get<vec3>(1, 0) = vec3(-1, 1, 0);
+    testMesh->get<vec3>(2, 0) = vec3(1, 1, 0);
+    testMesh->get<vec3>(3, 0) = vec3(1, -1, 0);
+
+    testMesh->parts.emplace_back();
+    testMesh->parts.back().indices = { 0, 1, 2, 2, 3, 0 };
+
+    VertexBuffer::uploadSingleMesh(testMesh);
+
 
     // Main loop
     glutMainLoop();
