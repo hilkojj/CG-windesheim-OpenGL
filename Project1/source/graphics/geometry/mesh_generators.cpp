@@ -5,7 +5,7 @@ vec3 tf(const vec3& v, const mat4& transform, bool dir)
     return vec3(transform * vec4(v, dir ? 0 : 1));
 }
 
-SharedMesh mesh_generators::createQuad(const mat4 &transform, float uvScaling)
+SharedMesh mesh_generators::createQuad(const mat4 &transform, const vec2& uvScaling)
 {
     
     SharedMesh quad(new Mesh);
@@ -36,7 +36,7 @@ SharedMesh mesh_generators::createQuad(const mat4 &transform, float uvScaling)
     return quad;
 }
 
-SharedMesh mesh_generators::createSphere(int segments, int rings, const mat4& transform, float uvScaling)
+SharedMesh mesh_generators::createSphere(int segments, int rings, const mat4& transform, const vec2& uvScaling)
 {
     
     SharedMesh sphere(new Mesh);
@@ -85,4 +85,55 @@ SharedMesh mesh_generators::createSphere(int segments, int rings, const mat4& tr
     assert(sphere->indices.size() == i);
 
     return sphere;
+}
+
+SharedMesh mesh_generators::createCylinder(int segments, const mat4& transform, const vec2& uvScaling)
+{
+    SharedMesh cylinder(new Mesh);
+    cylinder->name = "cylinder";
+    int posOffset = cylinder->attributes.add({ "position", 3 });
+    int norOffset = cylinder->attributes.add({ "normal", 3 });
+    int texOffset = cylinder->attributes.add({ "uv", 2 });
+
+    cylinder->indices.resize(segments * 6);
+
+    int nrOfVerts = (segments + 1) * 2;
+    cylinder->addVertices(nrOfVerts);
+
+    int vertI = 0;
+    for (int x = 0; x <= segments; x++)
+    {
+        float lon = 360.0 * ((float)x / segments);
+
+        vec3 pos0 = vec3(cos(lon * mu::DEGREES_TO_RAD), 0, sin(lon * mu::DEGREES_TO_RAD));
+        vec3 pos1 = vec3(pos0.x, 1, pos0.z);
+
+        {
+            cylinder->get<vec3>(vertI, posOffset) = tf(pos0, transform, false);
+            cylinder->get<vec3>(vertI, norOffset) = normalize(tf(pos0, transform, true));
+            cylinder->get<vec2>(vertI, texOffset) = vec2(lon / 360, 0) * uvScaling;
+            vertI++;
+        }
+        {
+            cylinder->get<vec3>(vertI, posOffset) = tf(pos1, transform, false);
+            cylinder->get<vec3>(vertI, norOffset) = normalize(tf(pos0, transform, true));
+            cylinder->get<vec2>(vertI, texOffset) = vec2(lon / 360, 1) * uvScaling;
+            vertI++;
+        }
+    }
+    assert(nrOfVerts == vertI);
+
+    int i = 0;
+    for (int x = 0; x < segments * 2; x += 2)
+    {
+        cylinder->indices[i++] = x + 0;
+        cylinder->indices[i++] = x + 1;
+        cylinder->indices[i++] = x + 2;
+        cylinder->indices[i++] = x + 2;
+        cylinder->indices[i++] = x + 1;
+        cylinder->indices[i++] = x + 3;
+    }
+    assert(cylinder->indices.size() == i);
+
+    return cylinder;
 }

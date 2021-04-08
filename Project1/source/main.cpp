@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 
     scene->models.emplace_back();
     auto &groundPlane = scene->models.back();
-    auto quad = mesh_generators::createQuad(scale(mat4(1), vec3(1000)), 100);
+    auto quad = mesh_generators::createQuad(scale(mat4(1), vec3(1000)), vec2(100));
     groundPlane.meshes.push_back(quad);
     VertexBuffer::uploadSingleMesh(quad);
     groundPlane.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
@@ -140,10 +140,14 @@ int main(int argc, char** argv)
 
     scene->models.emplace_back();
     auto& tree = scene->models.back();
-    auto sphere = mesh_generators::createSphere(32, 16, scale(mat4(1), vec3(10, 2, 1)));
+    auto sphere = mesh_generators::createSphere(32, 16, scale(mat4(1), vec3(1)));
     tree.meshes.push_back(sphere);
-    VertexBuffer::uploadSingleMesh(sphere);
-    tree.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
+
+    auto cylinder = mesh_generators::createCylinder(8, scale(mat4(1), vec3(3, 5, 3)));
+    tree.meshes.push_back(cylinder);
+
+    VertexBuffer::with(sphere->attributes)->add(sphere).add(cylinder).upload(true);
+    tree.meshes.back()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
 
 
     onResize(WIDTH, HEIGHT);
