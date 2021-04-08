@@ -41,8 +41,26 @@ void CameraController::update(float deltaTime, PerspectiveCamera &cam)
         }        
     }
 
-    if (key_input::justPressed('v'))
+    if (key_input::justPressed('v'))    // switch view modes
+    {
         droneMode = !droneMode;
+        int w = cam.viewportWidth;
+        int h = cam.viewportHeight;
+
+        if (droneMode)
+        {
+            delete walkModeCam;
+            walkModeCam = new PerspectiveCamera(cam);
+            if (droneModeDefaultCam)
+                cam = *droneModeDefaultCam;
+        }
+        else if (walkModeCam)
+            cam = *walkModeCam;
+
+        cam.viewportWidth = w;
+        cam.viewportHeight = h;
+    }
+        
 
     if (!droneMode) // walk mode:
     {
@@ -67,4 +85,10 @@ void CameraController::update(float deltaTime, PerspectiveCamera &cam)
             cam.position.y += deltaTime * speedMultiplier;
     }
     cam.update(); // update matrices.
+}
+
+CameraController::~CameraController()
+{
+    delete droneModeDefaultCam;
+    delete walkModeCam;
 }

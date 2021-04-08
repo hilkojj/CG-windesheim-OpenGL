@@ -189,6 +189,9 @@ int main(int argc, char** argv)
     glEnable(GL_CULL_FACE);
 
     scene = new Scene;
+    camController.droneModeDefaultCam = new PerspectiveCamera(scene->camera);
+    camController.droneModeDefaultCam->position = vec3(100, 200, 0);
+    camController.droneModeDefaultCam->lookAt(vec3(-80, 0, 0));
 
     {   // TOWER:
         scene->models.emplace_back();

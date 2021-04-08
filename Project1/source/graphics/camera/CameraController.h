@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PerspectiveCamera.h"
+#include <optional>
 
 class CameraController
 {
@@ -9,7 +10,11 @@ class CameraController
 
 	float yVelocity = 0;
 
+	PerspectiveCamera *walkModeCam = NULL;
+
 public:
+
+	PerspectiveCamera *droneModeDefaultCam = NULL;
 
 	float
 		speedMultiplier = 50,
@@ -19,6 +24,8 @@ public:
 		jumpForce = .5;
 
 	void update(float deltaTime, PerspectiveCamera &);
+
+	~CameraController();
 
 };
 
