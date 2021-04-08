@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\graphics\geometry\Mesh.cpp" />
     <ClCompile Include="source\utils\files.cpp" />
     <ClCompile Include="source\graphics\ShaderProgram.cpp" />
     <ClCompile Include="source\input\mouse_input.cpp" />
@@ -135,8 +136,11 @@
     <ClCompile Include="source\graphics\camera\CameraController.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\graphics\camera\PerspectiveCamera.cpp" />
+    <ClCompile Include="source\graphics\geometry\VertexAttributes.cpp" />
+    <ClCompile Include="source\graphics\geometry\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\graphics\geometry\Mesh.h" />
     <ClInclude Include="source\utils\files.h" />
     <ClInclude Include="source\graphics\ShaderProgram.h" />
     <ClInclude Include="source\input\mouse_input.h" />
@@ -144,6 +148,8 @@
     <ClInclude Include="source\graphics\camera\CameraController.h" />
     <ClInclude Include="source\utils\math.h" />
     <ClInclude Include="source\graphics\camera\PerspectiveCamera.h" />
+    <ClInclude Include="source\graphics\geometry\VertexAttributes.h" />
+    <ClInclude Include="source\graphics\geometry\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\shaders\default.vert">
