@@ -47,14 +47,13 @@ void Render()
     if (key_input::justPressed(27)) // ESC
         glutExit();
 
-    
     camController.update(deltaTimeSec, scene->camera);
     
     scene->render();
 
     auto &testModel = scene->models.back();
 
-    testModel.transform = rotate(testModel.transform, .1f, mu::Y);
+    //testModel.transform = rotate(testModel.transform, .1f, mu::Y);
 
     glutSwapBuffers();
     key_input::update();

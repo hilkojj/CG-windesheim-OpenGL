@@ -9,7 +9,7 @@
 struct Scene
 {
 	std::list<Model> models;
-	vec3 sunDirection = mu::Y;
+	vec3 sunDirection = mu::X;
 	vec3 backgroundColor = vec3(.1, .1, .6);
 
 	PerspectiveCamera camera;
