@@ -11,6 +11,8 @@ struct Model
 
 	std::vector<SharedMesh> meshes;
 
+	bool shadeless = false;
+
 	mat4 transform = mat4(1);
 
 	void render(Scene &);

@@ -125,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\default.frag" />
+    <None Include="assets\shaders\shadeless.frag" />
+    <None Include="assets\shaders\shadeless.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\shaders\default.vert" />

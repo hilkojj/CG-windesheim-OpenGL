@@ -9,12 +9,14 @@
 struct Scene
 {
 	std::list<Model> models;
-	vec3 sunDirection = mu::X;
-	vec3 backgroundColor = vec3(.1, .1, .6);
+	vec3 sunDirection = normalize(vec3(1, .7, 0));
+	vec3 backgroundColor = vec3(.2, .4, .8);
 
 	PerspectiveCamera camera;
 
-	ShaderProgram defaultShader;
+	ShaderProgram
+		defaultShader,
+		shadelessShader;
 
 	Scene();
 

@@ -7,6 +7,10 @@ Scene::Scene()
 	defaultShader("default shader",
 		files::readString("assets/shaders/default.vert").c_str(),
 		files::readString("assets/shaders/default.frag").c_str()
+	),
+	shadelessShader("shadeless shader",
+		files::readString("assets/shaders/shadeless.vert").c_str(),
+		files::readString("assets/shaders/shadeless.frag").c_str()
 	)
 {
 }

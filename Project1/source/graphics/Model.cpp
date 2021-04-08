@@ -3,7 +3,7 @@
 
 void Model::render(Scene &scene)
 {
-	auto &shader = scene.defaultShader;
+	auto &shader = shadeless ? scene.shadelessShader : scene.defaultShader;
 	auto &cam = scene.camera;
 
 	shader.use();
@@ -11,8 +11,12 @@ void Model::render(Scene &scene)
 	mat4 mvp = cam.combined * transform;
 	glUniformMatrix4fv(shader.location("mvp"), 1, GL_FALSE, value_ptr(mvp));
 	glUniformMatrix4fv(shader.location("transform"), 1, GL_FALSE, value_ptr(transform));
-	glUniform3fv(shader.location("sunDirection"), 1, &scene.sunDirection[0]);
-	glUniform3fv(shader.location("camPosition"), 1, &scene.camera.position[0]);
+
+	if (!shadeless)
+	{
+		glUniform3fv(shader.location("sunDirection"), 1, &scene.sunDirection[0]);
+		glUniform3fv(shader.location("camPosition"), 1, &scene.camera.position[0]);
+	}
 
 	int i = 0;
 	for (auto &mesh : meshes)
