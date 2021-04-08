@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../math.h"
+#include "../utils/math.h"
 
 namespace mouse_input
 {

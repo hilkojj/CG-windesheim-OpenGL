@@ -18,9 +18,6 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\glsl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\camera\PerspectiveCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,15 +30,18 @@
     <ClCompile Include="source\input\mouse_input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\ShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utils\files.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\glsl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\graphics\camera\PerspectiveCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\math.h">
+    <ClInclude Include="source\utils\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\camera\CameraController.h">
@@ -53,11 +53,17 @@
     <ClInclude Include="source\input\mouse_input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\graphics\ShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utils\files.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentshader.fsh" />
+    <None Include="assets\shaders\default.frag" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="vertexshader.vsh" />
+    <Text Include="assets\shaders\default.vert" />
   </ItemGroup>
 </Project>

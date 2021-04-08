@@ -23,12 +23,6 @@ void CameraController::update(float deltaTime, PerspectiveCamera &cam)
             cam.position += cam.right * deltaTime * speedMultiplier;
         if (key_input::pressed('a'))
             cam.position += -cam.right * deltaTime * speedMultiplier;
-
-        // down, up
-        if (key_input::pressed('q'))
-            cam.position.y -= deltaTime * speedMultiplier;
-        if (key_input::pressed('e'))
-            cam.position.y += deltaTime * speedMultiplier;
     }
 
     // rotate using mouse, instead of IJKL:
@@ -66,7 +60,11 @@ void CameraController::update(float deltaTime, PerspectiveCamera &cam)
     }
     else // drone mode:
     {
-
+        // down, up
+        if (key_input::pressed('q'))
+            cam.position.y -= deltaTime * speedMultiplier;
+        if (key_input::pressed('e'))
+            cam.position.y += deltaTime * speedMultiplier;
     }
     cam.update(); // update matrices.
 }
