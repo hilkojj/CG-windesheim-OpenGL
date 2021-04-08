@@ -19,7 +19,7 @@ void main()
 {
     float diffuseLight = (dot(sunDirection, vNormal) + 1.) * .5;    // 0 - 1
 
-    diffuseLight = max(.1, diffuseLight);   // add ambient light
+    diffuseLight = max(.3, diffuseLight);   // add ambient light
 
     vec3 diffuseColor = diffuse;
     if (useTexture == 1)

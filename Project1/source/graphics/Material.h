@@ -6,9 +6,9 @@
 struct Material
 {
 
-	vec3 diffuseColor;
-	vec3 specularColor;
-	float specularExponent;
+	vec3 diffuseColor = vec3(1);
+	vec3 specularColor = vec3(0);
+	float specularExponent = 1;
 
 	SharedTexture texture;
 

@@ -4,7 +4,7 @@
 void Model::render(Scene &scene)
 {
 	auto &shader = scene.defaultShader;
-	auto& cam = scene.camera;
+	auto &cam = scene.camera;
 
 	shader.use();
 
@@ -26,7 +26,7 @@ void Model::render(Scene &scene)
 
 		bool useTexture = !!mesh->material.texture;
 		if (useTexture)
-			mesh->material.texture->bind(1, shader, "texture");
+			mesh->material.texture->bind(0, shader, "texture");
 		glUniform1i(shader.location("useTexture"), useTexture ? 1 : 0);
 
 		mesh->render();

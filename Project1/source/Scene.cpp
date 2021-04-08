@@ -3,7 +3,7 @@
 
 Scene::Scene()
 	: 
-	camera(.1, 1000, 1, 1, 90),
+	camera(.1, 1000, 1, 1, 75),
 	defaultShader("default shader",
 		files::readString("assets/shaders/default.vert").c_str(),
 		files::readString("assets/shaders/default.frag").c_str()

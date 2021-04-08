@@ -15,6 +15,8 @@
 #include "graphics/Model.h"
 #include "loaders/model_loader.h"
 #include "Scene.h"
+#include "graphics/geometry/mesh_generators.h"
+#include "loaders/texture_loader.h"
 
 using namespace std;
 
@@ -118,30 +120,23 @@ int main(int argc, char** argv)
 
     scene = new Scene;
 
-    SharedMesh testMesh(new Mesh);
-    int pos = testMesh->attributes.add({ "position", 3 });
-    int col = testMesh->attributes.add({ "color", 3 });
-
-    testMesh->addVertices(4);
-
-    testMesh->get<vec3>(0, pos) = vec3(-1, -1, 0);
-    testMesh->get<vec3>(1, pos) = vec3(-1, 1, 0);
-    testMesh->get<vec3>(2, pos) = vec3(1, 1, 0);
-    testMesh->get<vec3>(3, pos) = vec3(1, -1, 0);
-
-    testMesh->get<vec3>(0, col) = mu::X;
-    testMesh->get<vec3>(1, col) = mu::Y;
-    testMesh->get<vec3>(2, col) = mu::X;
-    testMesh->get<vec3>(3, col) = mu::Z;
-
-    testMesh->indices = { 0, 1, 2, 2, 3, 0 };
-
-    VertexBuffer::uploadSingleMesh(testMesh);
-
-    // testModel.meshes.push_back(testMesh);
+    scene->models.emplace_back();
+    auto &tower = scene->models.back();
+    model_loader::loadIntoModel(tower, "assets/models/martini_toren.obj");
+    tower.transform = translate(tower.transform, vec3(-80, 0, 0));
 
     scene->models.emplace_back();
-    model_loader::loadIntoModel(scene->models.back(), "assets/models/test.obj");
+    auto &castle = scene->models.back();
+    model_loader::loadIntoModel(castle, "assets/models/zamek.obj");
+    castle.transform = translate(castle.transform, vec3(40, 0, 0));
+
+    scene->models.emplace_back();
+    auto &groundPlane = scene->models.back();
+    auto quad = mesh_generators::createQuad(scale(mat4(1), vec3(1000)), 100);
+    groundPlane.meshes.push_back(quad);
+    VertexBuffer::uploadSingleMesh(quad);
+    groundPlane.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
+
 
     onResize(WIDTH, HEIGHT);
 

@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\graphics\geometry\mesh_generators.cpp" />
     <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\loaders\model_loader.cpp" />
     <ClCompile Include="source\graphics\Model.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="source\loaders\texture_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\graphics\geometry\mesh_generators.h" />
     <ClInclude Include="source\external\stb_image.h" />
     <ClInclude Include="source\Scene.h" />
     <ClInclude Include="source\graphics\Material.h" />
