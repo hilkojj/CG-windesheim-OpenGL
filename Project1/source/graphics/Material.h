@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../utils/math.h"
+#include "Texture.h"
 
 struct Material
 {
@@ -9,7 +10,7 @@ struct Material
 	vec3 specularColor;
 	float specularExponent;
 
-	// todo: texture, normal map too?
+	SharedTexture texture;
 
 };
 

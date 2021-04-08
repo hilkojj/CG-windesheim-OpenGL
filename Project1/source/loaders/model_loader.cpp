@@ -2,8 +2,9 @@
 
 #include "../external/OBJ_Loader.h"
 #include "../graphics/geometry/VertexBuffer.h"
+#include "texture_loader.h"
 
-void model_loader::loadIntoModel(Model &model, const char *objPath)
+void model_loader::loadIntoModel(Model &model, const char *objPath, const char* texturePathPrefix)
 {
 	objl::Loader loader;
 	loader.LoadFile(objPath);
@@ -25,6 +26,9 @@ void model_loader::loadIntoModel(Model &model, const char *objPath)
 		mesh->material.diffuseColor = vec3(loadedMesh.MeshMaterial.Kd.X, loadedMesh.MeshMaterial.Kd.Y, loadedMesh.MeshMaterial.Kd.Z);
 		mesh->material.specularColor = vec3(loadedMesh.MeshMaterial.Ks.X, loadedMesh.MeshMaterial.Ks.Y, loadedMesh.MeshMaterial.Ks.Z);
 		mesh->material.specularExponent = loadedMesh.MeshMaterial.Ns;
+
+		if (!loadedMesh.MeshMaterial.map_Kd.empty())
+			mesh->material.texture = texture_loader::getOrLoad((std::string(texturePathPrefix) + loadedMesh.MeshMaterial.map_Kd).c_str());
 
 		for (auto i : loadedMesh.Indices)
 			mesh->indices.push_back(i);

@@ -114,7 +114,7 @@ int main(int argc, char** argv)
     InitGlutGlew(argc, argv);
 
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     scene = new Scene;
 

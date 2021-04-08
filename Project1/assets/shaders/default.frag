@@ -1,13 +1,18 @@
 #version 430 core
 
+precision mediump float;
+
 in vec3 vPosition;
 in vec3 vNormal;
+in vec2 vTextureCoord;
 
 uniform vec3 camPosition;
 uniform vec3 sunDirection;
 uniform vec3 diffuse;
 uniform vec3 specular;
 uniform float specularExponent;
+uniform int useTexture;
+uniform sampler2D diffuseTexture;
 
 // PHONG
 void main()
@@ -16,7 +21,11 @@ void main()
 
     diffuseLight = max(.1, diffuseLight);   // add ambient light
 
-    gl_FragColor = vec4(diffuse * diffuseLight, 1.0);
+    vec3 diffuseColor = diffuse;
+    if (useTexture == 1)
+        diffuseColor = texture(diffuseTexture, vTextureCoord).rgb;
+
+    gl_FragColor = vec4(diffuseColor * diffuseLight, 1.0);
 
 
     // specularity:

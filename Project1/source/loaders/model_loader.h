@@ -5,8 +5,7 @@
 namespace model_loader
 {
 
-	void loadIntoModel(Model &, const char* objPath);
-
+	void loadIntoModel(Model &, const char *objPath, const char *texturePathPrefix="assets/models/");
 
 };
 

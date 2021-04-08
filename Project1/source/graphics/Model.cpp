@@ -24,6 +24,11 @@ void Model::render(Scene &scene)
 		glUniform3fv(shader.location("specular"), 1, &mesh->material.specularColor[0]);
 		glUniform1f(shader.location("specularExponent"), mesh->material.specularExponent);
 
+		bool useTexture = !!mesh->material.texture;
+		if (useTexture)
+			mesh->material.texture->bind(1, shader, "texture");
+		glUniform1i(shader.location("useTexture"), useTexture ? 1 : 0);
+
 		mesh->render();
 	}
 

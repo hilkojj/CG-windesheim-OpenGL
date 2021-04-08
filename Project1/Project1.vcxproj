@@ -141,8 +141,11 @@
     <ClCompile Include="source\graphics\camera\PerspectiveCamera.cpp" />
     <ClCompile Include="source\graphics\geometry\VertexAttributes.cpp" />
     <ClCompile Include="source\graphics\geometry\VertexBuffer.cpp" />
+    <ClCompile Include="source\graphics\Texture.cpp" />
+    <ClCompile Include="source\loaders\texture_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\external\stb_image.h" />
     <ClInclude Include="source\Scene.h" />
     <ClInclude Include="source\graphics\Material.h" />
     <ClInclude Include="source\loaders\model_loader.h" />
@@ -158,6 +161,8 @@
     <ClInclude Include="source\graphics\camera\PerspectiveCamera.h" />
     <ClInclude Include="source\graphics\geometry\VertexAttributes.h" />
     <ClInclude Include="source\graphics\geometry\VertexBuffer.h" />
+    <ClInclude Include="source\graphics\Texture.h" />
+    <ClInclude Include="source\loaders\texture_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\shaders\default.vert">
