@@ -138,6 +138,14 @@ int main(int argc, char** argv)
     groundPlane.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
 
 
+    scene->models.emplace_back();
+    auto& tree = scene->models.back();
+    auto sphere = mesh_generators::createSphere(32, 16, scale(mat4(1), vec3(10, 2, 1)));
+    tree.meshes.push_back(sphere);
+    VertexBuffer::uploadSingleMesh(sphere);
+    tree.meshes.front()->material.texture = texture_loader::getOrLoad("assets/models/textures/grass.jpg");
+
+
     onResize(WIDTH, HEIGHT);
 
     // Main loop

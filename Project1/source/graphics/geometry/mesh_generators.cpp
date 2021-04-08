@@ -24,7 +24,7 @@ SharedMesh mesh_generators::createQuad(const mat4 &transform, float uvScaling)
     quad->get<vec3>(0, nor) =
         quad->get<vec3>(1, nor) =
         quad->get<vec3>(2, nor) =
-        quad->get<vec3>(3, nor) = tf(mu::Y, transform, true);
+        quad->get<vec3>(3, nor) = normalize(tf(mu::Y, transform, true));
 
     quad->get<vec2>(0, uv) = uvScaling * vec2(1, 1);
     quad->get<vec2>(1, uv) = uvScaling * vec2(1, -1);
@@ -34,4 +34,55 @@ SharedMesh mesh_generators::createQuad(const mat4 &transform, float uvScaling)
     quad->indices = { 0, 1, 2, 2, 3, 0 };
 
     return quad;
+}
+
+SharedMesh mesh_generators::createSphere(int segments, int rings, const mat4& transform, float uvScaling)
+{
+    
+    SharedMesh sphere(new Mesh);
+    sphere->name = "sphere";
+    int posOffset = sphere->attributes.add({ "position", 3 });
+    int norOffset = sphere->attributes.add({ "normal", 3 });
+    int texOffset = sphere->attributes.add({ "uv", 2 });
+
+    sphere->indices.resize((segments * (rings - 1)) * 6);
+
+    int nrOfVerts = (segments + 1) * rings;
+    sphere->addVertices(nrOfVerts);
+
+    int vertI = 0;
+    for (int x = 0; x <= segments; x++)
+    {
+        for (int y = 0; y < rings; y++)
+        {
+            float lon = 360.0 * ((float) x / segments);
+            float lat = (y / (rings - 1.0)) * 180.0 - 90.0;
+            vec3 pos = vec3(cos(lon * mu::DEGREES_TO_RAD), sin(lat * mu::DEGREES_TO_RAD), sin(lon * mu::DEGREES_TO_RAD));
+            float m = cos(lat * mu::DEGREES_TO_RAD);
+            pos.x *= m;
+            pos.z *= m;
+            sphere->get<vec3>(vertI, posOffset) = tf(pos, transform, false);
+            sphere->get<vec3>(vertI, norOffset) = normalize(tf(pos, transform, true));
+            sphere->get<vec2>(vertI, texOffset) = vec2(lon / 360, lat / 180 + .5) * uvScaling;
+            vertI++;
+        }
+    }
+    assert(nrOfVerts == vertI);
+    int i = 0;
+    for (int x = 0; x < segments; x++)
+    {
+        for (int y = 0; y < rings - 1; y++)
+        {
+            sphere->indices[i++] = y + (x * rings);
+            sphere->indices[i++] = y + 1 + (x * rings);
+            sphere->indices[i++] = y + ((x + 1) * rings);
+
+            sphere->indices[i++] = y + ((x + 1) * rings);
+            sphere->indices[i++] = y + (x * rings) + 1;
+            sphere->indices[i++] = y + ((x + 1) * rings) + 1;
+        }
+    }
+    assert(sphere->indices.size() == i);
+
+    return sphere;
 }
