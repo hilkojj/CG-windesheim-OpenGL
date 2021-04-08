@@ -1,8 +1,8 @@
 #pragma once
 #include "geometry/Mesh.h"
 #include "../utils/math.h"
-#include "ShaderProgram.h"
-#include "camera/PerspectiveCamera.h"
+
+class Scene;
 
 struct Model
 {
@@ -13,7 +13,7 @@ struct Model
 
 	mat4 transform = mat4(1);
 
-	void render(ShaderProgram &, PerspectiveCamera &);
+	void render(Scene &);
 
 };
 

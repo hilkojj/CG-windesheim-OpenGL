@@ -14,6 +14,7 @@
 #include "graphics/geometry/VertexBuffer.h"
 #include "graphics/Model.h"
 #include "loaders/model_loader.h"
+#include "Scene.h"
 
 using namespace std;
 
@@ -30,16 +31,9 @@ unsigned const int DELTA_TIME = 1000 / 60;
 // Variables
 //--------------------------------------------------------------------------------
 
-Model testModel;
+Scene *scene = NULL;
 
-// Matrices
-mat4 model;
-mat4 mvp;
-
-PerspectiveCamera *camera = NULL;   // initialization in main()
 CameraController camController;
-
-ShaderProgram* shader = NULL; // initialization in main()
 
 
 //--------------------------------------------------------------------------------
@@ -53,12 +47,13 @@ void Render()
     if (key_input::justPressed(27)) // ESC
         glutExit();
 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    camController.update(deltaTimeSec, *camera);
     
-    testModel.render(*shader, *camera);
+    camController.update(deltaTimeSec, scene->camera);
+    
+    scene->render();
+
+    auto &testModel = scene->models.back();
+
     testModel.transform = rotate(testModel.transform, .1f, mu::Y);
 
     glutSwapBuffers();
@@ -80,9 +75,9 @@ void Render(int n)
 
 void onResize(int w, int h)
 {
-    camera->viewportWidth = w;
-    camera->viewportHeight = h;
-    camera->update();
+    scene->camera.viewportWidth = w;
+    scene->camera.viewportHeight = h;
+    scene->camera.update();
     glViewport(0, 0, w, h);
 }
 
@@ -115,29 +110,14 @@ void InitGlutGlew(int argc, char** argv)
 }
 
 
-//------------------------------------------------------------
-// void InitShaders()
-// Initializes the fragmentshader and vertexshader
-//------------------------------------------------------------
-
-void InitShaders()
-{
-    shader = new ShaderProgram(
-        "default shader",
-        files::readString("assets/shaders/default.vert").c_str(),
-        files::readString("assets/shaders/default.frag").c_str());
-}
-
-
 int main(int argc, char** argv)
 {
-    camera = new PerspectiveCamera(.1, 1000, WIDTH, HEIGHT, 90);
     InitGlutGlew(argc, argv);
-    InitShaders();
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
+    scene = new Scene;
 
     SharedMesh testMesh(new Mesh);
     int pos = testMesh->attributes.add({ "position", 3 });
@@ -161,10 +141,15 @@ int main(int argc, char** argv)
 
     // testModel.meshes.push_back(testMesh);
 
-    model_loader::loadIntoModel(testModel, "assets/models/test.obj");
+    scene->models.emplace_back();
+    model_loader::loadIntoModel(scene->models.back(), "assets/models/test.obj");
+
+    onResize(WIDTH, HEIGHT);
 
     // Main loop
     glutMainLoop();
+
+    delete scene;
 
     return 0;
 }

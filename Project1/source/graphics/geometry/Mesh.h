@@ -2,6 +2,7 @@
 #include "VertexAttributes.h"
 
 #include <memory>
+#include "../Material.h"
 
 
 struct VertexData
@@ -49,6 +50,8 @@ struct Mesh : public VertexData
     std::vector<unsigned short> indices;
     GLenum mode = GL_TRIANGLES;
     int nrOfIndicesToRender = -1; // -1 => all
+
+    Material material;
 
     void render();
 

@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\loaders\model_loader.cpp" />
     <ClCompile Include="source\graphics\Model.cpp" />
     <ClCompile Include="source\graphics\geometry\Mesh.cpp" />
@@ -142,6 +143,8 @@
     <ClCompile Include="source\graphics\geometry\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Scene.h" />
+    <ClInclude Include="source\graphics\Material.h" />
     <ClInclude Include="source\loaders\model_loader.h" />
     <ClInclude Include="source\external\OBJ_Loader.h" />
     <ClInclude Include="source\graphics\Model.h" />

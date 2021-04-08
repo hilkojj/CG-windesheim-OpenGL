@@ -22,6 +22,10 @@ void model_loader::loadIntoModel(Model &model, const char *objPath)
 		mesh->name = loadedMesh.MeshName;
 		mesh->attributes = attributes;
 
+		mesh->material.diffuseColor = vec3(loadedMesh.MeshMaterial.Kd.X, loadedMesh.MeshMaterial.Kd.Y, loadedMesh.MeshMaterial.Kd.Z);
+		mesh->material.specularColor = vec3(loadedMesh.MeshMaterial.Ks.X, loadedMesh.MeshMaterial.Ks.Y, loadedMesh.MeshMaterial.Ks.Z);
+		mesh->material.specularExponent = loadedMesh.MeshMaterial.Ns;
+
 		for (auto i : loadedMesh.Indices)
 			mesh->indices.push_back(i);
 
