@@ -36,12 +36,9 @@ VertexBuffer &VertexBuffer::add(SharedMesh mesh)
     mesh->nrOfVertsUploadedToBuffer = mesh->nrOfVertices();
     nrOfVerts += mesh->nrOfVertices();
 
-    for (auto& part : mesh->parts)
-    {
-        part.indicesBufferOffset = nrOfIndices * sizeof(GLushort);
-        part.nrOfIndicesUploadedToBuffer = part.indices.size();
-        nrOfIndices += part.nrOfIndicesUploadedToBuffer;
-    }
+    mesh->indicesBufferOffset = nrOfIndices * sizeof(GLushort);
+    mesh->nrOfIndicesUploadedToBuffer = mesh->indices.size();
+    nrOfIndices += mesh->nrOfIndicesUploadedToBuffer;
 
     mesh->vertBuffer = this;
     return *this;
@@ -80,16 +77,13 @@ void VertexBuffer::upload(bool disposeOfflineData)
         glBufferSubData(GL_ARRAY_BUFFER, vertsOffset, vertsSize, mesh->vertices.data());
         vertsOffset += vertsSize;
 
-        for (auto& part : mesh->parts)
-        {
-            if (part.indices.size() != part.nrOfIndicesUploadedToBuffer)
-                throw std::runtime_error("Mesh part indices have resized between .add() and .upload() for mesh: " + mesh->name + " part: " + part.name);
+        if (mesh->indices.size() != mesh->nrOfIndicesUploadedToBuffer)
+            throw std::runtime_error("Mesh indices have resized between .add() and .upload() for  " + mesh->name);
 
-            GLuint indicesSize = part.nrOfIndicesUploadedToBuffer * sizeof(GLushort);
+        GLuint indicesSize = mesh->nrOfIndicesUploadedToBuffer * sizeof(GLushort);
 
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indicesOffset, indicesSize, part.indices.data());
-            indicesOffset += indicesSize;
-        }
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indicesOffset, indicesSize, mesh->indices.data());
+        indicesOffset += indicesSize;
 
         if (disposeOfflineData) mesh->disposeOfflineData();
     }

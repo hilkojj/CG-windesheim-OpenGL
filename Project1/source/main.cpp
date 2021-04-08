@@ -11,8 +11,9 @@
 #include "input/mouse_input.h"
 #include "graphics/ShaderProgram.h"
 #include "utils/files.h"
-#include "graphics/geometry/Mesh.h"
 #include "graphics/geometry/VertexBuffer.h"
+#include "graphics/Model.h"
+#include "loaders/model_loader.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ unsigned const int DELTA_TIME = 1000 / 60;
 // Variables
 //--------------------------------------------------------------------------------
 
-SharedMesh testMesh;
+Model testModel;
 
 // Matrices
 mat4 model;
@@ -55,17 +56,10 @@ void Render()
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shader->use();
-
-    // Do transformation
     camController.update(deltaTimeSec, *camera);
-    model = rotate(model, 0.01f, vec3(0.0f, 1.0f, 0.0f));
-    mvp = camera->combined * model;
-
-    // Send mvp
-    glUniformMatrix4fv(shader->location("mvp"), 1, GL_FALSE, value_ptr(mvp));
-
-    testMesh->render();
+    
+    testModel.render(*shader, *camera);
+    testModel.transform = rotate(testModel.transform, .1f, mu::Y);
 
     glutSwapBuffers();
     key_input::update();
@@ -145,21 +139,29 @@ int main(int argc, char** argv)
     glDisable(GL_CULL_FACE);
 
 
-    testMesh = SharedMesh(new Mesh);
-    testMesh->attributes.add({ "position", 3 });
+    SharedMesh testMesh(new Mesh);
+    int pos = testMesh->attributes.add({ "position", 3 });
+    int col = testMesh->attributes.add({ "color", 3 });
 
     testMesh->addVertices(4);
 
-    testMesh->get<vec3>(0, 0) = vec3(-1, -1, 0);
-    testMesh->get<vec3>(1, 0) = vec3(-1, 1, 0);
-    testMesh->get<vec3>(2, 0) = vec3(1, 1, 0);
-    testMesh->get<vec3>(3, 0) = vec3(1, -1, 0);
+    testMesh->get<vec3>(0, pos) = vec3(-1, -1, 0);
+    testMesh->get<vec3>(1, pos) = vec3(-1, 1, 0);
+    testMesh->get<vec3>(2, pos) = vec3(1, 1, 0);
+    testMesh->get<vec3>(3, pos) = vec3(1, -1, 0);
 
-    testMesh->parts.emplace_back();
-    testMesh->parts.back().indices = { 0, 1, 2, 2, 3, 0 };
+    testMesh->get<vec3>(0, col) = mu::X;
+    testMesh->get<vec3>(1, col) = mu::Y;
+    testMesh->get<vec3>(2, col) = mu::X;
+    testMesh->get<vec3>(3, col) = mu::Z;
+
+    testMesh->indices = { 0, 1, 2, 2, 3, 0 };
 
     VertexBuffer::uploadSingleMesh(testMesh);
 
+    // testModel.meshes.push_back(testMesh);
+
+    model_loader::loadIntoModel(testModel, "assets/models/test.obj");
 
     // Main loop
     glutMainLoop();

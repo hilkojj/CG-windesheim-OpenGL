@@ -46,24 +46,11 @@ struct Mesh : public VertexData
 
     VertexBuffer *vertBuffer = nullptr;
 
-    struct Part
-    {
-        std::string name;
-        std::vector<unsigned short> indices;
-        GLenum mode = GL_TRIANGLES;
-        int nrOfIndicesToRender = -1; // -1 => all
+    std::vector<unsigned short> indices;
+    GLenum mode = GL_TRIANGLES;
+    int nrOfIndicesToRender = -1; // -1 => all
 
-      private:
-        // used for glDrawElementsBaseVertex:
-        friend VertexBuffer;
-        friend Mesh;
-        int indicesBufferOffset = 0;
-        unsigned int nrOfIndicesUploadedToBuffer;
-    };
-
-    std::vector<Part> parts;
-
-    void render(int part = 0);
+    void render();
 
     // removes the vertices + indices that are stored in RAM,
     // but the mesh can still be drawn if it is uploaded to OpenGL/VRAM using a VertBuffer
@@ -77,5 +64,7 @@ struct Mesh : public VertexData
       friend VertexBuffer;
       unsigned int
           nrOfVertsUploadedToBuffer,
-          baseVertexInBuffer;
+          baseVertexInBuffer,
+          indicesBufferOffset,
+          nrOfIndicesUploadedToBuffer;
 };

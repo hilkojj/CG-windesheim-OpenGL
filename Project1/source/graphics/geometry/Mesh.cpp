@@ -26,27 +26,21 @@ void Mesh::disposeOfflineData()
     vertices.resize(0);
     vertices.shrink_to_fit();
 
-    for (auto& part : parts)
-    {
-        part.indices.resize(0);
-        part.indices.shrink_to_fit();
-    }
+    indices.resize(0);
+    indices.shrink_to_fit();
 }
 
-void Mesh::render(int partI)
+void Mesh::render()
 {
     if (!vertBuffer || !vertBuffer->isUploaded())
         throw std::runtime_error(name + " is not uploaded. Upload it first with a VertBuffer");
     vertBuffer->bind();
-    if (parts.size() <= partI)
-        throw std::runtime_error(name + " only has " + std::to_string(parts.size()) + " part(s). Requested: " + std::to_string(partI));
-    auto &part = parts.at(partI);
-
+ 
     glDrawElementsBaseVertex(
-        part.mode,
-        part.nrOfIndicesToRender < 0 ? part.nrOfIndicesUploadedToBuffer : part.nrOfIndicesToRender,
+        mode,
+        nrOfIndicesToRender < 0 ? nrOfIndicesUploadedToBuffer : nrOfIndicesToRender,
         GL_UNSIGNED_SHORT,
-        (void*)(uintptr_t) part.indicesBufferOffset,
+        (void*)(uintptr_t) indicesBufferOffset,
         baseVertexInBuffer
     );
 }
